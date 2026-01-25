@@ -1,20 +1,36 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+// Importo las herramientas de React Navigation
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
+// Importo las pantallas
+import TeamSelectionScreen from './screens/TeamSelectionScreen';
+import GameScreen from './screens/GameScreen';
+
+// Creo el navegador de tipo Stack
+const Stack = createStackNavigator();
+
+// La aplicación principal configura el navegador
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator 
+        initialRouteName="TeamSelection"
+        screenOptions={{
+          headerShown: false,  // Oculto la cabecera para que parezca una sola app
+        }}
+      >
+        <Stack.Screen 
+          name="TeamSelection" 
+          component={TeamSelectionScreen} 
+          options={{ title: 'Seleccionar Equipos' }}
+        />
+        <Stack.Screen 
+          name="Game" 
+          component={GameScreen} 
+          options={{ title: 'Juego' }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
