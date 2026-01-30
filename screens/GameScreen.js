@@ -1,6 +1,7 @@
 // Importo las herramientas que necesito de React y React Native
-import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 // Importo todos los logos
 import lakersLogo from '../assets/lakers.png';
@@ -9,7 +10,7 @@ import warriorsLogo from '../assets/warriors.png';
 import bullsLogo from '../assets/bulls.png';
 import heatLogo from '../assets/heat.png';
 
-// Datos de los equipos disponibles (iguales que en TeamSelectionScreen)
+// Datos de los equipos
 const equipos = [
   {
     nombre: "LAKERS",
@@ -38,171 +39,266 @@ const equipos = [
   }
 ];
 
-// Esta función crea la pantalla de juego
+// Pantalla de partido
 export default function GameScreen({ route }) {
-  // Obtengo los índices de los equipos seleccionados de los parámetros
+  const navigation = useNavigation();
   const { equipoJugador1, equipoJugador2 } = route.params;
   
-  // Devuelvo lo que se va a ver en pantalla
+  // Estado para los marcadores
+  const [puntosJugador1, setPuntosJugador1] = useState(0);
+  const [puntosJugador2, setPuntosJugador2] = useState(0);
+  
+  // Funciones para sumar puntos
+  const sumarPuntosJugador1 = (puntos) => {
+    setPuntosJugador1(puntosJugador1 + puntos);
+  };
+  
+  const sumarPuntosJugador2 = (puntos) => {
+    setPuntosJugador2(puntosJugador2 + puntos);
+  };
+  
+  // Función para finalizar el juego
+  const finalizarJuego = () => {
+    navigation.navigate('Winner', {
+      equipoJugador1,
+      equipoJugador2,
+      puntosJugador1,
+      puntosJugador2
+    });
+  };
+  
   return (
     <View style={styles.pantallaCompleta}>
       
-      {/* Contenedor que tiene las dos columnas una al lado de la otra */}
-      <View style={styles.contenedorDeColumnas}>
-        
-        {/* Columna del Jugador 1 */}
-        <View style={styles.columna}>
-          
-          {/* Etiqueta del Jugador 1 */}
-          <Text style={styles.etiquetaJugador}>J1</Text>
-          
-          {/* Logo del equipo actual del Jugador 1 */}
-          <Image 
-            source={equipos[equipoJugador1].logo} 
-            style={styles.logoImagen} 
-            resizeMode="contain"
-          />
-          
-          {/* Nombre del equipo actual del Jugador 1 */}
-          <Text style={styles.nombreEquipo}>{equipos[equipoJugador1].nombre}</Text>
-          
-          {/* Lista de jugadores del equipo actual del Jugador 1 */}
-          <View style={styles.listaJugadores}>
-            <View style={styles.cajaJugador}>
-              <Text style={styles.nombreJugador}>{equipos[equipoJugador1].jugadores[0]}</Text>
-            </View>
-            <View style={styles.cajaJugador}>
-              <Text style={styles.nombreJugador}>{equipos[equipoJugador1].jugadores[1]}</Text>
-            </View>
-            <View style={styles.cajaJugador}>
-              <Text style={styles.nombreJugador}>{equipos[equipoJugador1].jugadores[2]}</Text>
-            </View>
-            <View style={styles.cajaJugador}>
-              <Text style={styles.nombreJugador}>{equipos[equipoJugador1].jugadores[3]}</Text>
-            </View>
-            <View style={styles.cajaJugador}>
-              <Text style={styles.nombreJugador}>{equipos[equipoJugador1].jugadores[4]}</Text>
-            </View>
+      {/* Marcador central */}
+      <View style={styles.marcadorCentral}>
+        <View style={styles.filaMarcador}>
+          <View style={styles.equipoMarcador}>
+            <Text style={styles.nombreMarcador}>{equipos[equipoJugador1].nombre}</Text>
+            <Text style={styles.puntosMarcador}>{puntosJugador1}</Text>
           </View>
-          
+          <Text style={styles.vsMarcador}>VS</Text>
+          <View style={styles.equipoMarcador}>
+            <Text style={styles.nombreMarcador}>{equipos[equipoJugador2].nombre}</Text>
+            <Text style={styles.puntosMarcador}>{puntosJugador2}</Text>
+          </View>
         </View>
-
-        {/* Columna del Jugador 2 */}
-        <View style={styles.columna}>
+      </View>
+      
+      {/* Contenedor de equipos */}
+      <View style={styles.contenedorEquipos}>
+        
+        {/* Equipo Jugador 1 */}
+        <View style={styles.columnaEquipo}>
+          <Text style={styles.tituloEquipo}>LOCAL</Text>
+          <Image source={equipos[equipoJugador1].logo} style={styles.logo} />
           
-          {/* Etiqueta del Jugador 2 */}
-          <Text style={styles.etiquetaJugador}>J2</Text>
-          
-          {/* Logo del equipo actual del Jugador 2 */}
-          <Image 
-            source={equipos[equipoJugador2].logo} 
-            style={styles.logoImagen} 
-            resizeMode="contain"
-          />
-          
-          {/* Nombre del equipo actual del Jugador 2 */}
-          <Text style={styles.nombreEquipo}>{equipos[equipoJugador2].nombre}</Text>
-          
-          {/* Lista de jugadores del equipo actual del Jugador 2 */}
+          {/* Lista de jugadores con botones */}
           <View style={styles.listaJugadores}>
-            <View style={styles.cajaJugador}>
-              <Text style={styles.nombreJugador}>{equipos[equipoJugador2].jugadores[0]}</Text>
-            </View>
-            <View style={styles.cajaJugador}>
-              <Text style={styles.nombreJugador}>{equipos[equipoJugador2].jugadores[1]}</Text>
-            </View>
-            <View style={styles.cajaJugador}>
-              <Text style={styles.nombreJugador}>{equipos[equipoJugador2].jugadores[2]}</Text>
-            </View>
-            <View style={styles.cajaJugador}>
-              <Text style={styles.nombreJugador}>{equipos[equipoJugador2].jugadores[3]}</Text>
-            </View>
-            <View style={styles.cajaJugador}>
-              <Text style={styles.nombreJugador}>{equipos[equipoJugador2].jugadores[4]}</Text>
-            </View>
+            {equipos[equipoJugador1].jugadores.map((jugador, index) => (
+              <View key={index} style={styles.filaJugador}>
+                <Text style={styles.nombreJugador}>{jugador}</Text>
+                <View style={styles.botonesPuntos}>
+                  <TouchableOpacity 
+                    style={styles.botonPunto2} 
+                    onPress={() => sumarPuntosJugador1(2)}
+                  >
+                    <Text style={styles.textoBoton}>+2</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                    style={styles.botonPunto3} 
+                    onPress={() => sumarPuntosJugador1(3)}
+                  >
+                    <Text style={styles.textoBoton}>+3</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
           </View>
+        </View>
+        
+        {/* Equipo Jugador 2 */}
+        <View style={styles.columnaEquipo}>
+          <Text style={styles.tituloEquipo}>VISITANTE</Text>
+          <Image source={equipos[equipoJugador2].logo} style={styles.logo} />
           
+          {/* Lista de jugadores con botones */}
+          <View style={styles.listaJugadores}>
+            {equipos[equipoJugador2].jugadores.map((jugador, index) => (
+              <View key={index} style={styles.filaJugador}>
+                <Text style={styles.nombreJugador}>{jugador}</Text>
+                <View style={styles.botonesPuntos}>
+                  <TouchableOpacity 
+                    style={styles.botonPunto2} 
+                    onPress={() => sumarPuntosJugador2(2)}
+                  >
+                    <Text style={styles.textoBoton}>+2</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                    style={styles.botonPunto3} 
+                    onPress={() => sumarPuntosJugador2(3)}
+                  >
+                    <Text style={styles.textoBoton}>+3</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
+          </View>
         </View>
         
       </View>
+      
+      {/* Botón de fin del juego */}
+      <TouchableOpacity style={styles.botonFin} onPress={finalizarJuego}>
+        <Text style={styles.textoBoton}>FIN DEL JUEGO</Text>
+      </TouchableOpacity>
+      
+
       
     </View>
   );
 }
 
-// Estilos para los colores y tamaños (iguales que en TeamSelectionScreen)
+// Estilos
 const styles = StyleSheet.create({
-  // La pantalla completa
   pantallaCompleta: {
-    flex: 1,                    // Ocupa toda la pantalla
-    backgroundColor: '#121212', // Fondo gris oscuro
-    paddingTop: 40,             // Espacio arriba para no tapar la hora
+    flex: 1,
+    backgroundColor: '#121212',
+    paddingTop: 40,
   },
   
-  // El contenedor que organiza las dos columnas horizontalmente
-  contenedorDeColumnas: {
-    flex: 1,                    // Ocupa casi toda la pantalla
-    flexDirection: 'row',      // Pone las cosas una al lado de la otra
-    paddingHorizontal: 20,      // Espacio a los lados
+  // Marcador central
+  marcadorCentral: {
+    backgroundColor: '#1e1e1e',
+    padding: 15,
+    borderRadius: 15,
+    marginHorizontal: 20,
+    marginBottom: 10,
   },
   
-  // Cada columna individual
-  columna: {
-    flex: 1,                    // Cada columna ocupa la mitad del espacio
-    alignItems: 'center',       // Centra todo lo que está adentro
-    backgroundColor: '#333333', // Fondo gris más claro
-    marginHorizontal: 10,       // Espacio entre las columnas
-    borderRadius: 20,           // Bordes redondeados
-    paddingVertical: 20,        // Espacio arriba y abajo
+  filaMarcador: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   
-  // La etiqueta J1 o J2
-  etiquetaJugador: {
-    fontSize: 24,               // Tamaño de letra grande
-    fontWeight: 'bold',         // Negrita
-    color: '#FFD700',          // Color dorado
-    marginBottom: 15,           // Espacio abajo
+  equipoMarcador: {
+    alignItems: 'center',
+    flex: 1,
   },
   
-  // El logo del equipo
-  logoImagen: {
-    width: 100,                 // Ancho del logo
-    height: 100,                // Alto del logo
-    borderRadius: 50,           // Bordes redondeados
-    marginBottom: 10,           // Espacio abajo
-    backgroundColor: '#555555', // Fondo gris oscuro
+  nombreMarcador: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 3,
   },
   
-  // El nombre del equipo
-  nombreEquipo: {
-    fontSize: 20,               // Tamaño de letra
-    fontWeight: 'bold',         // Negrita
-    color: '#FFFFFF',          // Color blanco
-    marginBottom: 20,           // Espacio abajo
-    textAlign: 'center',        // Centra el texto
+  puntosMarcador: {
+    color: '#FFD700',
+    fontSize: 28,
+    fontWeight: 'bold',
   },
   
-  // La lista que contiene a todos los jugadores
+  vsMarcador: {
+    color: '#888888',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginHorizontal: 15,
+  },
+  
+  // Contenedor de equipos
+  contenedorEquipos: {
+    flex: 1,
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+  },
+  
+  columnaEquipo: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#333333',
+    marginHorizontal: 5,
+    borderRadius: 15,
+    padding: 15,
+  },
+  
+  tituloEquipo: {
+    color: '#FFD700',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  
+  logo: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginBottom: 10,
+  },
+  
   listaJugadores: {
-    flex: 1,                    // Ocupa el espacio que queda
-    width: '100%',              // Ancho completo
-    marginBottom: 20,           // Espacio abajo
+    flex: 1,
+    width: '100%',
   },
   
-  // La caja individual de cada jugador
-  cajaJugador: {
-    backgroundColor: '#444444', // Fondo gris medio
-    paddingVertical: 8,         // Espacio arriba y abajo
-    paddingHorizontal: 12,      // Espacio a los lados
-    marginVertical: 3,          // Espacio entre cajas
-    borderRadius: 8,            // Bordes redondeados
-    marginHorizontal: 10,       // Espacio a los lados
+  filaJugador: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginVertical: 4,
+    padding: 8,
+    backgroundColor: '#444444',
+    borderRadius: 8,
   },
   
-  // El nombre del jugador
   nombreJugador: {
-    color: '#CCCCCC',          // Color gris claro
-    fontSize: 14,               // Tamaño de letra pequeño
-    textAlign: 'center',        // Centra el texto
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 4,
   },
+  
+  botonesPuntos: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  
+  botonPunto2: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 6,
+    flex: 1,
+    marginRight: 5,
+  },
+  
+  botonPunto3: {
+    backgroundColor: '#2196F3',
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 6,
+    flex: 1,
+    marginLeft: 5,
+  },
+  
+  textoBoton: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 12,
+  },
+  
+  // Botón de fin del juego
+  botonFin: {
+    backgroundColor: '#FF5722',
+    marginHorizontal: 20,
+    marginVertical: 15,
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  
+
 });

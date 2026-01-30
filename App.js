@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 // Importo las pantallas
 import TeamSelectionScreen from './screens/TeamSelectionScreen';
 import GameScreen from './screens/GameScreen';
+import WinnerScreen from './screens/WinnerScreen';
 
 // Creo el navegador de tipo Stack
 const Stack = createStackNavigator();
@@ -28,7 +29,12 @@ export default function App() {
         <Stack.Screen 
           name="Game" 
           component={GameScreen} 
-          options={{ title: 'Juego' }}
+          options={{ title: 'Partido' }}
+        />
+        <Stack.Screen 
+          name="Winner" 
+          component={WinnerScreen} 
+          options={{ title: 'Resultado' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

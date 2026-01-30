@@ -1,25 +1,27 @@
 # AGENTS.md - Guide for AI Coding Assistants
 
-This document provides guidance for AI agents working on this React Native basketball team selection app built with Expo.
+This React Native basketball team selection app is built with Expo and uses React Navigation for screen management.
 
-## Build/Test Commands
+## Build/Test/Lint Commands
 
 ### Development Commands
 - `npm start` or `expo start` - Start the Expo development server
-- `npm run android` or `expo start --android` - Run on Android device/emulator
+- `npm run android` or `expo start --android` - Run on Android device/emulator  
 - `npm run ios` or `expo start --ios` - Run on iOS device/simulator
 - `npm run web` or `expo start --web` - Run in web browser
 
 ### Testing
-- No test framework currently configured
-- To add testing: Recommend `@testing-library/react-native` with Jest
-- Single test command would typically be: `npm test -- --testNamePattern="testName"`
-- Install testing dependencies: `npm install --save-dev @testing-library/react-native jest`
+- **No test framework currently configured**
+- Recommended setup: `npm install --save-dev @testing-library/react-native jest`
+- Run all tests: `npm test` (once configured)
+- Run specific test: `npm test -- --testNamePattern="testName"`
+- Add to package.json scripts: `"test": "jest"`
 
 ### Linting/Formatting
-- No linting framework currently configured
-- Recommend ESLint with React Native rules: `npm install --save-dev eslint eslint-plugin-react-native`
-- Formatting command would be: `npm run format` (if Prettier is added)
+- **No linting framework currently configured**
+- Recommended ESLint setup: `npm install --save-dev eslint eslint-plugin-react-native`
+- Recommended Prettier setup: `npm install --save-dev prettier`
+- Add scripts: `"lint": "eslint .", "format": "prettier --write ."`
 
 ## Code Style Guidelines
 
@@ -222,11 +224,13 @@ const [equipoJugador1, setEquipoJugador1] = useState(0);
 - Local image assets for team logos
 - Responsive layout with flexbox
 - Touchable buttons for team switching
+- React Navigation Stack for screen management
 
 **Data Structure:**
 - Teams stored in `equipos` array with `nombre`, `logo`, `jugadores` properties
 - Each team has 5 players in a `jugadores` array
 - Team selection uses array indices (0-4)
+- Navigation parameters passed between screens: `equipoJugador1`, `equipoJugador2`
 
 ### Expo Configuration
 - Orientation: Portrait
@@ -237,7 +241,10 @@ const [equipoJugador1, setEquipoJugador1] = useState(0);
 ### Dependencies
 - Core: React 19.1.0, React Native 0.81.5
 - Platform: Expo SDK ~54.0.31
+- Navigation: @react-navigation/native ^7.1.28, @react-navigation/stack ^7.6.16
 - Status bar: expo-status-bar ~3.0.9
+- Safe area: react-native-safe-area-context ~5.6.0
+- Screens: react-native-screens ~4.16.0
 
 ## Testing Recommendations
 When adding tests, use:
@@ -259,6 +266,61 @@ test('should switch player 1 team when change button is pressed', () => {
   fireEvent.press(changeButton);
   // Assert team changed
 });
+```
+
+## Development Workflow
+
+### Before Making Changes
+1. Read existing code to understand patterns
+2. Check current state management approach
+3. Follow Spanish naming conventions
+4. Maintain consistent styling approach
+
+### After Making Changes
+1. Test on multiple platforms if possible
+2. Check for console errors
+3. Verify image loading works correctly
+4. Ensure responsive layout is maintained
+
+## Code Patterns & Best Practices
+
+### Team Navigation Pattern
+```javascript
+const cambiarEquipoJugador1 = () => {
+  setEquipoJugador1(equipoJugador1 + 1);
+  if (equipoJugador1 >= equipos.length - 1) {
+    setEquipoJugador1(0);  // Circular navigation
+  }
+};
+```
+
+### Image Rendering Pattern
+```javascript
+<Image 
+  key={`player1-${equipoJugador1}`}  // Key for re-rendering
+  source={equipos[equipoJugador1].logo} 
+  style={styles.logoImagen} 
+  resizeMode="contain"
+  onError={(error) => console.log('Error loading image:', error.nativeEvent.error)}
+/>
+```
+
+### Player List Rendering Pattern
+```javascript
+<View style={styles.listaJugadores}>
+  {equipos[equipoJugador1].jugadores.map((jugador, index) => (
+    <View key={index} style={styles.cajaJugador}>
+      <Text style={styles.nombreJugador}>{jugador}</Text>
+    </View>
+  ))}
+</View>
+```
+
+### Button Pattern
+```javascript
+<TouchableOpacity style={styles.botonCambiar} onPress={cambiarEquipoJugador1}>
+  <Text style={styles.textoBoton}>CAMBIAR</Text>
+</TouchableOpacity>
 ```
 
 ## Development Workflow
