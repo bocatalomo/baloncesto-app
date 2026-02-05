@@ -43,27 +43,43 @@ const equipos = [
 export default function GameScreen({ route }) {
   const navigation = useNavigation();
   const { equipoJugador1, equipoJugador2 } = route.params;
-  
+
   // Estado para los marcadores
   const [puntosJugador1, setPuntosJugador1] = useState(0);
   const [puntosJugador2, setPuntosJugador2] = useState(0);
-  
+
+  // Estado para guardar puntos de cada jugador
+  const [puntosPorJugador1, setPuntosPorJugador1] = useState(
+    equipos[equipoJugador1].jugadores.map(() => 0)
+  );
+  const [puntosPorJugador2, setPuntosPorJugador2] = useState(
+    equipos[equipoJugador2].jugadores.map(() => 0)
+  );
+
   // Funciones para sumar puntos
-  const sumarPuntosJugador1 = (puntos) => {
+  const sumarPuntosJugador1 = (puntos, indiceJugador) => {
     setPuntosJugador1(puntosJugador1 + puntos);
+    const nuevosPuntos = [...puntosPorJugador1];
+    nuevosPuntos[indiceJugador] += puntos;
+    setPuntosPorJugador1(nuevosPuntos);
   };
-  
-  const sumarPuntosJugador2 = (puntos) => {
+
+  const sumarPuntosJugador2 = (puntos, indiceJugador) => {
     setPuntosJugador2(puntosJugador2 + puntos);
+    const nuevosPuntos = [...puntosPorJugador2];
+    nuevosPuntos[indiceJugador] += puntos;
+    setPuntosPorJugador2(nuevosPuntos);
   };
-  
+
   // Función para finalizar el juego
   const finalizarJuego = () => {
     navigation.navigate('Winner', {
       equipoJugador1,
       equipoJugador2,
       puntosJugador1,
-      puntosJugador2
+      puntosJugador2,
+      puntosPorJugador1,
+      puntosPorJugador2
     });
   };
   
@@ -93,28 +109,28 @@ export default function GameScreen({ route }) {
           <Text style={styles.tituloEquipo}>LOCAL</Text>
           <Image source={equipos[equipoJugador1].logo} style={styles.logo} />
           
-          {/* Lista de jugadores con botones */}
-          <View style={styles.listaJugadores}>
-            {equipos[equipoJugador1].jugadores.map((jugador, index) => (
-              <View key={index} style={styles.filaJugador}>
-                <Text style={styles.nombreJugador}>{jugador}</Text>
-                <View style={styles.botonesPuntos}>
-                  <TouchableOpacity 
-                    style={styles.botonPunto2} 
-                    onPress={() => sumarPuntosJugador1(2)}
-                  >
-                    <Text style={styles.textoBoton}>+2</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity 
-                    style={styles.botonPunto3} 
-                    onPress={() => sumarPuntosJugador1(3)}
-                  >
-                    <Text style={styles.textoBoton}>+3</Text>
-                  </TouchableOpacity>
+            {/* Lista de jugadores con botones */}
+            <View style={styles.listaJugadores}>
+              {equipos[equipoJugador1].jugadores.map((jugador, index) => (
+                <View key={index} style={styles.filaJugador}>
+                  <Text style={styles.nombreJugador}>{jugador}</Text>
+                  <View style={styles.botonesPuntos}>
+                    <TouchableOpacity
+                      style={styles.botonPunto2}
+                      onPress={() => sumarPuntosJugador1(2, index)}
+                    >
+                      <Text style={styles.textoBoton}>+2</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.botonPunto3}
+                      onPress={() => sumarPuntosJugador1(3, index)}
+                    >
+                      <Text style={styles.textoBoton}>+3</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            ))}
-          </View>
+              ))}
+            </View>
         </View>
         
         {/* Equipo Jugador 2 */}
@@ -122,28 +138,28 @@ export default function GameScreen({ route }) {
           <Text style={styles.tituloEquipo}>VISITANTE</Text>
           <Image source={equipos[equipoJugador2].logo} style={styles.logo} />
           
-          {/* Lista de jugadores con botones */}
-          <View style={styles.listaJugadores}>
-            {equipos[equipoJugador2].jugadores.map((jugador, index) => (
-              <View key={index} style={styles.filaJugador}>
-                <Text style={styles.nombreJugador}>{jugador}</Text>
-                <View style={styles.botonesPuntos}>
-                  <TouchableOpacity 
-                    style={styles.botonPunto2} 
-                    onPress={() => sumarPuntosJugador2(2)}
-                  >
-                    <Text style={styles.textoBoton}>+2</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity 
-                    style={styles.botonPunto3} 
-                    onPress={() => sumarPuntosJugador2(3)}
-                  >
-                    <Text style={styles.textoBoton}>+3</Text>
-                  </TouchableOpacity>
+            {/* Lista de jugadores con botones */}
+            <View style={styles.listaJugadores}>
+              {equipos[equipoJugador2].jugadores.map((jugador, index) => (
+                <View key={index} style={styles.filaJugador}>
+                  <Text style={styles.nombreJugador}>{jugador}</Text>
+                  <View style={styles.botonesPuntos}>
+                    <TouchableOpacity
+                      style={styles.botonPunto2}
+                      onPress={() => sumarPuntosJugador2(2, index)}
+                    >
+                      <Text style={styles.textoBoton}>+2</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.botonPunto3}
+                      onPress={() => sumarPuntosJugador2(3, index)}
+                    >
+                      <Text style={styles.textoBoton}>+3</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            ))}
-          </View>
+              ))}
+            </View>
         </View>
         
       </View>

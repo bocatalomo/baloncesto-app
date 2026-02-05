@@ -15,37 +15,49 @@ const equipos = [
   {
     nombre: "LAKERS",
     logo: lakersLogo,
+    jugadores: ["LeBron James", "Anthony Davis", "Austin Reaves", "D'Angelo Russell", "Rui Hachimura"]
   },
   {
     nombre: "CELTICS",
     logo: celticsLogo,
+    jugadores: ["Jayson Tatum", "Jaylen Brown", "Kristaps Porzingis", "Derrick White", "Al Horford"]
   },
   {
     nombre: "WARRIORS",
     logo: warriorsLogo,
+    jugadores: ["Stephen Curry", "Klay Thompson", "Andrew Wiggins", "Jonathan Kuminga", "Draymond Green"]
   },
   {
     nombre: "BULLS",
     logo: bullsLogo,
+    jugadores: ["Zach LaVine", "Nikola Vucevic", "Coby White", "Patrick Williams", "Alex Caruso"]
   },
   {
     nombre: "HEAT",
     logo: heatLogo,
+    jugadores: ["Jimmy Butler", "Bam Adebayo", "Tyler Herro", "Nikola Jovic", "Duncan Robinson"]
   }
 ];
 
 // Pantalla de ganador
 export default function WinnerScreen({ route }) {
   const navigation = useNavigation();
-  const { equipoJugador1, equipoJugador2, puntosJugador1, puntosJugador2 } = route.params;
-  
+  const {
+    equipoJugador1,
+    equipoJugador2,
+    puntosJugador1,
+    puntosJugador2,
+    puntosPorJugador1 = [],
+    puntosPorJugador2 = []
+  } = route.params;
+
   // Determinar el resultado
   let esEmpate = false;
   let equipoGanador = null;
   let equipoPerdedor = null;
   let puntosGanador = 0;
   let puntosPerdedor = 0;
-  
+
   if (puntosJugador1 > puntosJugador2) {
     equipoGanador = equipos[equipoJugador1];
     equipoPerdedor = equipos[equipoJugador2];
@@ -59,6 +71,35 @@ export default function WinnerScreen({ route }) {
   } else {
     esEmpate = true;
   }
+
+  // Crear lista de todos los jugadores con sus puntos
+  // Usar equipos directamente para garantizar que siempre haya datos
+  const jugadoresEquipo1 = equipos[equipoJugador1]?.jugadores || [];
+  const jugadoresEquipo2 = equipos[equipoJugador2]?.jugadores || [];
+
+  let todosLosJugadores = [];
+
+  for (let i = 0; i < 5; i++) {
+    if (jugadoresEquipo1[i]) {
+      todosLosJugadores.push({
+        nombre: jugadoresEquipo1[i],
+        puntos: puntosPorJugador1?.[i] || 0,
+        equipo: equipos[equipoJugador1]?.nombre || ''
+      });
+    }
+    if (jugadoresEquipo2[i]) {
+      todosLosJugadores.push({
+        nombre: jugadoresEquipo2[i],
+        puntos: puntosPorJugador2?.[i] || 0,
+        equipo: equipos[equipoJugador2]?.nombre || ''
+      });
+    }
+  }
+
+  // Ordenar por puntos y tomar los 6 mejores
+  const mejoresJugadores = todosLosJugadores
+    .sort((a, b) => b.puntos - a.puntos)
+    .slice(0, 6);
   
   // Función para volver al inicio
   const volverAlInicio = () => {
@@ -104,7 +145,22 @@ export default function WinnerScreen({ route }) {
         )}
         
       </View>
-      
+
+      {/* Lista de mejores jugadores */}
+      <View style={styles.mejoresJugadores}>
+        <Text style={styles.tituloMejores}>TOP 6 JUGADORES</Text>
+        {mejoresJugadores.length === 0 && (
+          <Text style={{ color: '#888', textAlign: 'center' }}>Sin datos</Text>
+        )}
+        {mejoresJugadores.map((jugador, index) => (
+          <View key={index} style={styles.filaJugador}>
+            <Text style={styles.posicion}>{index + 1}.</Text>
+            <Text style={styles.nombreJugador}>{jugador.nombre}</Text>
+            <Text style={styles.puntosJugador}>{jugador.puntos} pts</Text>
+          </View>
+        ))}
+      </View>
+
       {/* Botón para volver al inicio */}
       <TouchableOpacity style={styles.botonVolver} onPress={volverAlInicio}>
         <Text style={styles.textoBoton}>JUGAR OTRA VEZ</Text>
@@ -129,6 +185,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 30,
+    paddingBottom: 200,
   },
   
   // Estilos de empate
@@ -232,7 +289,7 @@ const styles = StyleSheet.create({
   botonVolver: {
     backgroundColor: '#2196F3',
     marginHorizontal: 30,
-    marginBottom: 40,
+    marginBottom: 15,
     paddingVertical: 15,
     borderRadius: 10,
     alignItems: 'center',
@@ -243,5 +300,51 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     textAlign: 'center',
+  },
+
+  mejoresJugadores: {
+    position: 'absolute',
+    bottom: 90,
+    width: '90%',
+    backgroundColor: '#333333',
+    borderRadius: 15,
+    padding: 15,
+    maxHeight: 280,
+  },
+
+  tituloMejores: {
+    color: '#FFD700',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+
+  filaJugador: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: '#444444',
+  },
+
+  posicion: {
+    color: '#FFD700',
+    fontSize: 14,
+    fontWeight: 'bold',
+    width: 30,
+  },
+
+  nombreJugador: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    flex: 1,
+  },
+
+  puntosJugador: {
+    color: '#4CAF50',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });
