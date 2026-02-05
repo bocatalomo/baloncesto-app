@@ -34,10 +34,10 @@ export default function App() {
       {/* initialRouteName indica cuál pantalla se muestra primero */}
       <Stack.Navigator 
         initialRouteName="TeamSelection"
-        {/* screenOptions aplica opciones a todas las pantallas */}
+        /* screenOptions aplica opciones a todas las pantallas */
         screenOptions={{
-          // headerShown: false oculta la barra de encabezado superior
-          // Esto hace que la app parezca una sola pantalla continua
+          /* headerShown: false oculta la barra de encabezado superior*/
+          /* Esto hace que la app parezca una sola pantalla continua */
           headerShown: false,
         }}
       >
